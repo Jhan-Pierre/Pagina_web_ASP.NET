@@ -14,7 +14,7 @@
 
 <div class="container">
     <div class="row mt-3">
-        <table id="tb_personal" class="table table-striped display" style="width:100%">
+        <table id="tb_personal" class="table table-striped display mb-4" style="width:100%">
             <thead>
                 <tr>
                     <td>@Html.DisplayNameFor(per => per.dni)</td>
@@ -96,6 +96,25 @@
     </div>
 </div>
 
+<div class="modal" tabindex="-1" id="modalConfirm">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title text-white"><i class="fas fa-trash"></i> Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6></h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-outline-danger" id="btnConfirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script src="~/lib/datatables.net/js/jquery.dataTables.js"></script>
     <script src="~/lib/datatables.net/js/dataTables.buttons.min.js"></script>
@@ -118,7 +137,7 @@
                     {
                         "data": "dni",
                         "render": function (data) {
-                            return "<button class='btn btn-outline-success' type='button' onclick='AbrirRegistro(" + data + ")'><i class='far fa-edit'></i></button>" +
+                            return "<button class='btn btn-outline-success me-2' type='button' onclick='AbrirRegistro(" + data + ")'><i class='far fa-edit'></i></button>" +
                                 "<button class='btn btn-outline-danger' type='button' onclick='Eliminar(" + data + ")'><i class='fas fa-trash-alt'></i></button>";
                         }
                     }
@@ -212,7 +231,10 @@
         });
 
         function Eliminar($dni) {
-            if (confirm("Seguro de desea Eliminar?")) {
+            $('#modalConfirm .modal-body h6').html('¿Seguro que desea eliminar el registro con DNI <span style="color:red;">' + $dni + '</span>?');
+            $('#modalConfirm').modal('show');
+
+            $('#btnConfirm').click(function () {
                 jQuery.ajax({
                     url: "@Url.Action("Borrar", "Personal")" + "?dni=" + $dni,
                     type: "GET",
@@ -224,8 +246,8 @@
                         }
                     }
                 });
-            }
+                $('#modalConfirm').modal('hide');
+            });
         }
-
     </script>
 }
